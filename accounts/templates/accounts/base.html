@@ -1,0 +1,86 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="theme-color" content="#142b4a">
+
+    <title>{% block title %}RescueConnect{% endblock %}</title>
+
+    <link rel="stylesheet" href="{% static 'accounts/css/style.css' %}">
+</head>
+
+<body>
+
+    <header class="site-header">
+        <div class="container header-content">
+
+            <a href="{% url 'home' %}" class="brand">
+                <span class="brand-icon">R</span>
+
+                <span class="brand-text">
+                    Rescue<span>Connect</span>
+                </span>
+            </a>
+
+            <nav class="main-nav">
+                <a href="{% url 'home' %}">Home</a>
+
+                {% if user.is_authenticated %}
+                    <span class="nav-user">
+                        Hi, {{ user.username }}
+                    </span>
+
+                    <form method="post"
+                          action="{% url 'logout' %}"
+                          class="nav-form">
+                        {% csrf_token %}
+                        <button type="submit" class="nav-button">
+                            Logout
+                        </button>
+                    </form>
+
+                {% else %}
+                    <a href="{% url 'login' %}">Login</a>
+
+                    <a href="{% url 'register' %}"
+                       class="nav-register">
+                        Get Started
+                    </a>
+                {% endif %}
+            </nav>
+
+        </div>
+    </header>
+
+    {% if messages %}
+        <div class="container messages-container">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-content">
+            <p>
+                Emergency Rescue and Evacuation Management System
+            </p>
+
+            <p class="footer-note">
+                Supporting communities through coordinated emergency response.
+            </p>
+        </div>
+    </footer>
+<script src="{% static 'accounts/js/auth.js' %}" defer></script>
+</body>
+</html>

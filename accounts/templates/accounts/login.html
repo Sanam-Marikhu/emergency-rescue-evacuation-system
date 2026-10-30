@@ -1,0 +1,116 @@
+{% extends 'accounts/base.html' %}
+
+{% block content %}
+<section class="auth-container">
+    <div class="auth-card">
+
+        <div class="auth-header">
+            <h1>Welcome Back!</h1>
+            <p>Log in to your Emergency Rescue account.</p>
+        </div>
+
+        <form method="POST" action="{% url 'login' %}">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="form-error" role="alert">
+                    {% for error in form.non_field_errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="form-group">
+                <label for="{{ form.username.id_for_label }}">Username</label>
+                {{ form.username }}
+
+                {% for error in form.username.errors %}
+                    <small class="field-error">{{ error }}</small>
+                {% endfor %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.password.id_for_label }}">Password</label>
+
+                <div class="password-wrapper">
+                    {{ form.password }}
+
+                    <button
+                        type="button"
+                        class="eye-button"
+                        onclick="toggleLoginPassword(this)"
+                        aria-label="Show password"
+                        aria-pressed="false"
+                        title="Show password"
+                    >
+                        <svg viewBox="0 0 24 24" width="20" height="20"
+                             fill="none" stroke="currentColor"
+                             stroke-width="2" stroke-linecap="round"
+                             stroke-linejoin="round" aria-hidden="true">
+                            <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                    </button>
+                </div>
+
+                {% for error in form.password.errors %}
+                    <small class="field-error">{{ error }}</small>
+                {% endfor %}
+            </div>
+
+            <button type="submit" class="auth-button">
+                Log In
+            </button>
+        </form>
+
+        <p class="auth-footer">
+            Don't have an account?
+            <a href="{% url 'register' %}">Create an account</a>
+        </p>
+
+    </div>
+</section>
+
+<script>
+    function toggleLoginPassword(button) {
+        const wrapper = button.closest('.password-wrapper');
+        const passwordInput = wrapper.querySelector('input');
+
+        const isHidden = passwordInput.type === 'password';
+
+        passwordInput.type = isHidden ? 'text' : 'password';
+
+        button.setAttribute(
+            'aria-label',
+            isHidden ? 'Hide password' : 'Show password'
+        );
+
+        button.setAttribute(
+            'title',
+            isHidden ? 'Hide password' : 'Show password'
+        );
+
+        button.setAttribute('aria-pressed', String(isHidden));
+
+        button.innerHTML = isHidden
+            ? `<svg viewBox="0 0 24 24" width="20" height="20"
+                    fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" aria-hidden="true">
+                    <path d="M3 3l18 18"/>
+                    <path d="M10.6 10.6a2 2 0 002.8 2.8"/>
+                    <path d="M9.9 5.2A11 11 0 0112 5
+                             c6.5 0 10 7 10 7a16 16 0 01-3.1 3.9"/>
+                    <path d="M6.2 6.2C3.5 8 2 12 2 12
+                             s3.5 7 10 7a10 10 0 004.1-.9"/>
+                </svg>`
+            : `<svg viewBox="0 0 24 24" width="20" height="20"
+                    fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" aria-hidden="true">
+                    <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                </svg>`;
+    }
+</script>
+{% endblock %}

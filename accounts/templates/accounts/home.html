@@ -1,0 +1,141 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}Home | RescueConnect{% endblock %}
+
+{% block content %}
+
+<section class="page-section">
+    <div class="container">
+
+        <div class="hero">
+            <div class="hero-content">
+
+                <span class="eyebrow">EMERGENCY RESPONSE & EVACUATION</span>
+
+                <h1>
+                    Every Second Matters.<br>
+                    <span>Every Life Counts.</span>
+                </h1>
+
+                <p class="hero-description">
+                    Report emergencies, coordinate rescue operations,
+                    and help communities access timely emergency assistance.
+                </p>
+
+                <div class="hero-actions">
+                    {% if user.is_authenticated %}
+
+                        <a href="#services" class="button button-primary">
+                            Explore Services
+                        </a>
+
+                    {% else %}
+
+                        <a href="{% url 'register' %}"
+                           class="button button-primary">
+                            Get Started
+                        </a>
+
+                        <a href="{% url 'login' %}"
+                           class="button button-secondary">
+                            Sign In
+                        </a>
+
+                    {% endif %}
+                </div>
+
+                <div class="hero-note">
+                    <span class="status-dot"></span>
+                    Designed to support coordinated emergency response
+                </div>
+
+            </div>
+
+            <div class="hero-visual">
+                <div class="visual-card">
+                    <div class="visual-icon">+</div>
+                    <h3>Emergency Support</h3>
+                    <p>Report incidents and help responders understand where assistance is needed.</p>
+
+                    <div class="visual-divider"></div>
+
+                    <div class="visual-row">
+                        <span class="visual-marker"></span>
+                        Incident Reporting
+                    </div>
+
+                    <div class="visual-row">
+                        <span class="visual-marker marker-green"></span>
+                        Rescue Coordination
+                    </div>
+
+                    <div class="visual-row">
+                        <span class="visual-marker marker-amber"></span>
+                        Evacuation Information
+                    </div>
+                </div>
+
+                <div class="floating-badge">
+                    Community Safety
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<section class="services-section" id="services">
+    <div class="container">
+
+        <div class="section-intro">
+            <span class="eyebrow">OUR SERVICES</span>
+            <h2 class="section-heading">Emergency Response, Connected</h2>
+            <p class="muted-text">
+                One platform designed to connect emergency reports,
+                rescue operations, and evacuation information.
+            </p>
+        </div>
+
+        <div class="service-grid">
+
+            <article class="service-card">
+                <div class="service-icon emergency-icon">!</div>
+                <h3>Report an Emergency</h3>
+                <p>
+                    Submit incident details so authorized personnel
+                    can review the situation and determine the next steps.
+                </p>
+            </article>
+
+            <article class="service-card">
+                <div class="service-icon rescue-icon">+</div>
+                <h3>Rescue Coordination</h3>
+                <p>
+                    Support coordination between verified incidents
+                    and available rescue teams.
+                </p>
+            </article>
+
+            <article class="service-card">
+                <div class="service-icon shelter-icon">⌂</div>
+                <h3>Evacuation Information</h3>
+                <p>
+                    Access information about designated evacuation
+                    centers as it becomes available in the system.
+                </p>
+            </article>
+
+        </div>
+
+        <div class="safety-notice">
+            <strong>Important:</strong>
+            This platform is intended to support emergency coordination.
+            It does not replace official emergency services or guarantee
+            immediate rescue. In a real emergency, contact the appropriate
+            local emergency authorities.
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}
