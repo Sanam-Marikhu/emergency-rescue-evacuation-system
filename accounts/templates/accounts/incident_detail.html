@@ -1,0 +1,186 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+{% load tz %}
+
+{% block title %}Incident Details | RescueConnect{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'accounts/css/incident_detail.css' %}">
+{% endblock %}
+
+{% block site_header %}{% endblock %}
+{% block site_footer %}{% endblock %}
+{% block main_class %}id-main{% endblock %}
+
+{% block content %}
+{% localtime on %}
+<div class="id-layout">
+
+    <!-- Sidebar -->
+    <aside class="id-sidebar">
+        <div class="id-brand">
+            <span class="id-logo">R</span>
+            <span>RescueConnect</span>
+        </div>
+
+        <nav class="id-nav">
+            <a href="{% url 'citizen_dashboard' %}">Dashboard</a>
+            <a href="{% url 'report_incident' %}">Report Emergency</a>
+            <a href="{% url 'my_reports' %}" class="active">My Reports</a>
+        </nav>
+
+        <form method="POST" action="{% url 'logout' %}" class="id-logout">
+            {% csrf_token %}
+            <button type="submit">Logout</button>
+        </form>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="id-content">
+
+        <div class="id-topbar">
+            <a href="{% url 'my_reports' %}" class="id-back">
+                ← Back to My Reports
+            </a>
+        </div>
+
+        <div class="id-heading">
+            <div>
+                <p class="id-eyebrow">INCIDENT MANAGEMENT</p>
+                <h1>Incident Details</h1>
+                <p>Review the information and current status of your report.</p>
+            </div>
+            <span class="id-reference">Report #{{ incident.id }}</span>
+        </div>
+
+        <!-- Status -->
+        <section class="id-status-card">
+            <div>
+                <span class="id-label">CURRENT STATUS</span>
+                <h2>{{ incident.get_status_display }}</h2>
+                <p>Your incident report is currently in this stage.</p>
+            </div>
+            <span class="id-status-badge status-{{ incident.status }}">
+                {{ incident.get_status_display }}
+            </span>
+        </section>
+
+        <!-- Incident Information -->
+        <section class="id-card">
+            <h2>Incident Information</h2>
+
+            <div class="id-info-grid">
+
+                <div class="id-info-item">
+                    <span class="id-label">Incident Type</span>
+                    <strong>{{ incident.get_incident_type_display }}</strong>
+                </div>
+
+                <div class="id-info-item">
+                    <span class="id-label">Severity</span>
+                    <strong class="severity-{{ incident.severity }}">
+                        {{ incident.get_severity_display }}
+                    </strong>
+                </div>
+
+                <div class="id-info-item">
+                    <span class="id-label">Location</span>
+                    <strong>{{ incident.location }}</strong>
+                </div>
+
+                <div class="id-info-item">
+                    <span class="id-label">Date Submitted</span>
+                    <strong>{{ incident.created_at|date:"F d, Y" }}</strong>
+                </div>
+
+                <div class="id-info-item">
+                    <span class="id-label">Time Submitted</span>
+                    <strong>{{ incident.created_at|time:"h:i A" }}</strong>
+                </div>
+
+            </div>
+
+            <div class="id-description">
+                <span class="id-label">Incident Description</span>
+                <p>{{ incident.description|default:"No description provided." }}</p>
+            </div>
+        </section>
+
+        <!-- Incident Status Timeline -->
+        <section class="id-card id-timeline-card">
+
+            <h2>Incident Status History</h2>
+
+            <p class="id-timeline-intro">
+                Follow the progress of your emergency report.
+            </p>
+
+            <div class="id-timeline">
+
+                <!-- Initial Submission -->
+                <div class="id-timeline-item">
+                    <div class="id-timeline-marker submitted-marker"></div>
+
+                    <div class="id-timeline-content">
+                        <h3>Report Submitted</h3>
+
+                        <span class="id-timeline-date">
+                            {{ incident.created_at|date:"F d, Y" }}
+                            at {{ incident.created_at|time:"h:i A" }}
+                        </span>
+
+                        <p>
+                            Your emergency report was successfully submitted.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Subsequent Status Updates -->
+                {% for update in incident.status_history.all %}
+
+                <div class="id-timeline-item">
+                    <div class="id-timeline-marker"></div>
+
+                    <div class="id-timeline-content">
+
+                        <h3>{{ update.get_status_display }}</h3>
+
+                        <span class="id-timeline-date">
+                            {{ update.created_at|date:"F d, Y" }}
+                            at {{ update.created_at|time:"h:i A" }}
+                        </span>
+
+                        {% if update.message %}
+                        <p>{{ update.message }}</p>
+                        {% endif %}
+
+                        <span class="id-timeline-admin">
+                            Updated by:
+                            {% if update.updated_by %}
+                            {{ update.updated_by.username }}
+                            {% else %}
+                            System
+                            {% endif %}
+                        </span>
+
+                    </div>
+                </div>
+
+                {% endfor %}
+
+            </div>
+        </section>
+
+
+        <div class="id-note">
+            <strong>Need emergency assistance?</strong>
+            <p>
+                If the situation is urgent or has become more dangerous,
+                contact the appropriate local emergency services directly.
+            </p>
+        </div>
+
+    </main>
+</div>
+{% endlocaltime %}
+{% endblock %}

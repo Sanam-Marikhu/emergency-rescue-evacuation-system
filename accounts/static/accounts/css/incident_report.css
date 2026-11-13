@@ -1,0 +1,380 @@
+
+/* =====================================================
+   RESCUECONNECT - INCIDENT REPORT PAGE
+   Uses shared My Reports dashboard layout
+   ===================================================== */
+
+:root {
+    --ir-primary: #142b4a;
+    --ir-primary-light: #203e64;
+    --ir-danger: #e63946;
+    --ir-danger-hover: #c92d3a;
+    --ir-background: #f3f6fb;
+    --ir-surface: #ffffff;
+    --ir-text: #243247;
+    --ir-muted: #718096;
+    --ir-border: #dce3ec;
+    --ir-shadow: 0 8px 25px rgba(20, 43, 74, 0.05);
+}
+
+/* Page heading */
+
+.ir-form-heading {
+    margin: 25px 0 18px;
+}
+
+.ir-form-heading h2 {
+    margin: 0 0 7px;
+    color: var(--ir-primary);
+    font-size: 19px;
+    font-weight: 750;
+}
+
+.ir-form-heading p {
+    margin: 0;
+    color: var(--ir-muted);
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.ir-form-heading p span {
+    color: var(--ir-danger);
+    font-weight: 700;
+}
+
+/* Emergency notice */
+
+.ir-emergency-notice {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 17px 20px;
+    margin-top: 25px;
+    border: 1px solid #f3c5c9;
+    border-left: 4px solid var(--ir-danger);
+    border-radius: 11px;
+    background: #fff1f2;
+}
+
+.ir-notice-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #fee2e2;
+    color: var(--ir-danger);
+    font-size: 19px;
+    font-weight: 800;
+}
+
+.ir-emergency-notice strong {
+    display: block;
+    margin-bottom: 5px;
+    color: #842029;
+    font-size: 14px;
+}
+
+.ir-emergency-notice p {
+    margin: 0;
+    color: #842029;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+/* Form card */
+
+.ir-form {
+    padding: 30px;
+    border: 1px solid #e7ecf3;
+    border-radius: 14px;
+    background: var(--ir-surface);
+    box-shadow: var(--ir-shadow);
+}
+
+/* Sections */
+
+.ir-form-section {
+    padding-bottom: 28px;
+    margin-bottom: 28px;
+    border-bottom: 1px solid #edf0f5;
+}
+
+.ir-section-heading {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 25px;
+}
+
+.ir-section-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 39px;
+    height: 39px;
+    border-radius: 10px;
+    background: #edf3fa;
+    color: var(--ir-primary);
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.ir-section-heading h3 {
+    margin: 0 0 5px;
+    color: var(--ir-primary);
+    font-size: 16px;
+    font-weight: 750;
+}
+
+.ir-section-heading p {
+    margin: 0;
+    color: var(--ir-muted);
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+/* Form fields */
+
+.ir-field {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    margin-bottom: 21px;
+}
+
+.ir-field:last-child {
+    margin-bottom: 0;
+}
+
+.ir-field label {
+    margin-bottom: 9px;
+    color: var(--ir-text);
+    font-size: 13px;
+    font-weight: 650;
+}
+
+.ir-field label span {
+    color: var(--ir-danger);
+}
+
+/* Inputs, dropdowns and textareas */
+
+.ir-form input:not([type="checkbox"]),
+.ir-form select,
+.ir-form textarea {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 47px;
+    padding: 11px 13px;
+    border: 1px solid var(--ir-border);
+    border-radius: 8px;
+    outline: none;
+    background: #ffffff;
+    color: var(--ir-text);
+    font-family: inherit;
+    font-size: 13px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.ir-form input:hover,
+.ir-form select:hover,
+.ir-form textarea:hover {
+    border-color: #aab9cd;
+}
+
+.ir-form input:focus,
+.ir-form select:focus,
+.ir-form textarea:focus {
+    border-color: var(--ir-primary-light);
+    box-shadow: 0 0 0 3px rgba(32, 62, 100, 0.09);
+}
+
+.ir-form input::placeholder,
+.ir-form textarea::placeholder {
+    color: #9aa6b6;
+}
+
+.ir-form textarea {
+    min-height: 140px;
+    resize: vertical;
+    line-height: 1.7;
+}
+
+.ir-form select {
+    cursor: pointer;
+}
+
+/* Help text */
+
+.ir-field small,
+.ir-help-text {
+    display: block;
+    margin-top: 8px;
+    color: var(--ir-muted);
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.ir-help-text {
+    margin-top: -8px;
+}
+
+/* Two and three column fields */
+
+.ir-field-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.ir-people-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* GPS note */
+
+.ir-gps-note {
+    padding: 12px 15px;
+    border: 1px solid #d4e4fa;
+    border-radius: 8px;
+    background: #eff6ff;
+    color: #315d91;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+/* Validation errors */
+
+.ir-form-errors {
+    padding: 14px 17px;
+    margin-bottom: 22px;
+    border: 1px solid #f3c5c9;
+    border-radius: 9px;
+    background: #fff1f2;
+    color: #842029;
+    font-size: 13px;
+}
+
+.ir-field .errorlist {
+    padding-left: 18px;
+    margin: 7px 0 0;
+    color: #c92d3a;
+    font-size: 12px;
+}
+
+/* Form buttons */
+
+.ir-form-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding-top: 3px;
+}
+
+.ir-cancel-button,
+.ir-submit-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 46px;
+    padding: 11px 21px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 650;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+
+.ir-cancel-button {
+    border: 1px solid var(--ir-border);
+    background: #f5f7fa;
+    color: var(--ir-text);
+}
+
+.ir-cancel-button:hover {
+    background: #e9eef5;
+}
+
+.ir-submit-button {
+    border: 1px solid var(--ir-danger);
+    background: var(--ir-danger);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(230, 57, 70, 0.15);
+}
+
+.ir-submit-button:hover {
+    border-color: var(--ir-danger-hover);
+    background: var(--ir-danger-hover);
+    box-shadow: 0 6px 16px rgba(230, 57, 70, 0.2);
+    transform: translateY(-1px);
+}
+
+.ir-submit-button:active {
+    transform: translateY(0);
+}
+
+/* Privacy message */
+
+.ir-privacy-note {
+    margin: 20px 0 5px;
+    color: var(--ir-muted);
+    font-size: 12px;
+    text-align: center;
+}
+
+/* Responsive layout */
+
+@media (max-width: 900px) {
+    .ir-people-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 650px) {
+    .ir-form {
+        padding: 23px 18px;
+    }
+
+    .ir-field-grid,
+    .ir-people-grid {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
+    .ir-form-actions {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+
+    .ir-cancel-button,
+    .ir-submit-button {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .ir-emergency-notice {
+        padding: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .ir-section-heading {
+        align-items: flex-start;
+    }
+
+    .ir-section-heading h3 {
+        font-size: 15px;
+    }
+
+    .ir-form-heading h2 {
+        font-size: 17px;
+    }
+}

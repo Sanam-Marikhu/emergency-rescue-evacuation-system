@@ -1,0 +1,213 @@
+
+{% extends 'accounts/base.html' %}
+{% load static %}
+
+{% block title %}Notifications | RescueConnect{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'accounts/css/citizen_dashboard.css' %}">
+<link rel="stylesheet" href="{% static 'accounts/css/notifications.css' %}">
+{% endblock %}
+
+{% block site_header %}{% endblock %}
+{% block site_footer %}{% endblock %}
+{% block main_class %}rc-main{% endblock %}
+
+{% block content %}
+
+<div class="rc-dashboard">
+
+    <!-- Sidebar -->
+    <aside class="rc-sidebar">
+
+        <div class="rc-brand">
+            <div class="rc-brand-icon">R</div>
+            <div>
+                <h2>RescueConnect</h2>
+                <p>Citizen Portal</p>
+            </div>
+        </div>
+
+        <div class="rc-menu">
+
+            <p class="rc-menu-label">MAIN MENU</p>
+
+            <a href="{% url 'citizen_dashboard' %}" class="rc-menu-link">
+                <span>⌂</span> Dashboard
+            </a>
+
+            <a href="{% url 'report_incident' %}" class="rc-menu-link">
+                <span>＋</span> Report Emergency
+            </a>
+
+            <a href="{% url 'my_reports' %}" class="rc-menu-link">
+                <span>▤</span> My Reports
+            </a>
+
+            <a href="{% url 'notifications' %}" class="rc-menu-link rc-active">
+                <span>♢</span> Notifications
+                {% if unread_notifications %}
+                    <span class="rc-menu-notification-count">
+                        {{ unread_notifications }}
+                    </span>
+                {% endif %}
+            </a>
+
+            <p class="rc-menu-label rc-account-label">ACCOUNT</p>
+
+            <a href="#" class="rc-menu-link">
+                <span>⚙</span> Settings
+            </a>
+
+            <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="rc-menu-link rc-logout">
+                    <span>↪</span> Logout
+                </button>
+            </form>
+
+        </div>
+
+        <div class="rc-help-card">
+            <div class="rc-help-icon">!</div>
+            <h3>Need Help?</h3>
+            <p>Report an emergency to request assistance from rescue teams.</p>
+            <a href="{% url 'report_incident' %}">Report Now →</a>
+        </div>
+
+    </aside>
+
+    <!-- Main Content -->
+    <div class="rc-content">
+
+        <header class="rc-topbar">
+            <div>
+                <p class="rc-breadcrumb">Citizen Portal / Notifications</p>
+                <h1>Notifications</h1>
+            </div>
+
+            <div class="rc-user">
+                <div class="rc-avatar">
+                    {{ request.user.username|first|upper }}
+                </div>
+                <div>
+                    <strong>{{ request.user.username }}</strong>
+                    <p>Citizen</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- Page Heading -->
+        <section class="rc-notification-heading">
+            <div>
+                <span class="rc-notification-eyebrow">STAY INFORMED</span>
+                <h2>Your Notifications</h2>
+                <p>Updates about the emergency reports you have submitted.</p>
+            </div>
+
+            <div class="rc-notification-summary">
+                <span class="rc-summary-number">{{ unread_notifications }}</span>
+                <span>Unread Updates</span>
+            </div>
+        </section>
+
+        <!-- Notification List -->
+        <section class="rc-notification-section">
+
+            <div class="rc-notification-section-header">
+                <div>
+                    <h3>Recent Updates</h3>
+                    <p>Stay informed about your incident progress.</p>
+                </div>
+                <span class="rc-total-count">
+                    {{ notifications|length }} Updates
+                </span>
+            </div>
+
+            {% if notifications %}
+
+                <div class="rc-notification-list">
+
+                    {% for notification in notifications %}
+
+                        <a href="{% url 'incident_detail' notification.incident.id %}"
+                           class="rc-notification-card {% if not notification.is_read %}rc-unread{% endif %}">
+
+                            <div class="rc-notification-symbol">
+                                {% if notification.status == 'resolved' %}
+                                    ✓
+                                {% elif notification.status == 'rejected' %}
+                                    ×
+                                {% elif notification.status == 'assigned' %}
+                                    ↗
+                                {% else %}
+                                    !
+                                {% endif %}
+                            </div>
+
+                            <div class="rc-notification-body">
+
+                                <div class="rc-notification-title-row">
+                                    <h4>
+                                        {{ notification.incident.get_incident_type_display }}
+                                        Report Update
+                                    </h4>
+
+                                    {% if not notification.is_read %}
+                                        <span class="rc-unread-label">NEW</span>
+                                    {% endif %}
+                                </div>
+
+                                <p class="rc-notification-message">
+                                    {% if notification.message %}
+                                        {{ notification.message }}
+                                    {% else %}
+                                        Your incident status has been updated.
+                                    {% endif %}
+                                </p>
+
+                                <div class="rc-notification-meta">
+                                    <span>
+                                        Report #{{ notification.incident.id }}
+                                    </span>
+
+                                    <span class="rc-notification-status rc-status-{{ notification.status }}">
+                                        {{ notification.get_status_display }}
+                                    </span>
+
+                                    <span>
+                                        {{ notification.created_at|date:"M d, Y - h:i A" }}
+                                    </span>
+                                </div>
+
+                            </div>
+
+                            <div class="rc-notification-arrow">→</div>
+
+                        </a>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <div class="rc-notification-empty">
+                    <div class="rc-empty-symbol">♢</div>
+                    <h3>You're All Caught Up!</h3>
+                    <p>
+                        You don't have any notifications yet.
+                        Updates about your emergency reports will appear here.
+                    </p>
+                    <a href="{% url 'my_reports' %}">View My Reports →</a>
+                </div>
+
+            {% endif %}
+
+        </section>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,25 +1,26 @@
+
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <meta name="theme-color" content="#142b4a">
 
     <title>{% block title %}RescueConnect{% endblock %}</title>
 
     <link rel="stylesheet" href="{% static 'accounts/css/style.css' %}">
+    {% block extra_css %}{% endblock %}
 </head>
 
 <body>
 
+    {% block site_header %}
     <header class="site-header">
         <div class="container header-content">
 
             <a href="{% url 'home' %}" class="brand">
                 <span class="brand-icon">R</span>
-
                 <span class="brand-text">
                     Rescue<span>Connect</span>
                 </span>
@@ -33,20 +34,13 @@
                         Hi, {{ user.username }}
                     </span>
 
-                    <form method="post"
-                          action="{% url 'logout' %}"
-                          class="nav-form">
+                    <form method="post" action="{% url 'logout' %}" class="nav-form">
                         {% csrf_token %}
-                        <button type="submit" class="nav-button">
-                            Logout
-                        </button>
+                        <button type="submit" class="nav-button">Logout</button>
                     </form>
-
                 {% else %}
                     <a href="{% url 'login' %}">Login</a>
-
-                    <a href="{% url 'register' %}"
-                       class="nav-register">
+                    <a href="{% url 'register' %}" class="nav-register">
                         Get Started
                     </a>
                 {% endif %}
@@ -54,6 +48,7 @@
 
         </div>
     </header>
+    {% endblock %}
 
     {% if messages %}
         <div class="container messages-container">
@@ -65,22 +60,22 @@
         </div>
     {% endif %}
 
-    <main>
-        {% block content %}
-        {% endblock %}
+    <main class="{% block main_class %}{% endblock %}">
+        {% block content %}{% endblock %}
     </main>
 
+    {% block site_footer %}
     <footer class="site-footer">
         <div class="container footer-content">
-            <p>
-                Emergency Rescue and Evacuation Management System
-            </p>
-
+            <p>Emergency Rescue and Evacuation Management System</p>
             <p class="footer-note">
                 Supporting communities through coordinated emergency response.
             </p>
         </div>
     </footer>
-<script src="{% static 'accounts/js/auth.js' %}" defer></script>
+    {% endblock %}
+
+    <script src="{% static 'accounts/js/auth.js' %}" defer></script>
+
 </body>
 </html>

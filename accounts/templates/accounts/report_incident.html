@@ -1,0 +1,278 @@
+
+{% extends 'accounts/base.html' %}
+{% load static %}
+
+{% block title %}Report Emergency | RescueConnect{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'accounts/css/my_reports.css' %}">
+<link rel="stylesheet" href="{% static 'accounts/css/incident_report.css' %}">
+{% endblock %}
+
+{% block site_header %}{% endblock %}
+{% block site_footer %}{% endblock %}
+{% block main_class %}mr-main{% endblock %}
+
+{% block content %}
+
+<div class="mr-layout">
+
+    <!-- Sidebar -->
+    <aside class="mr-sidebar">
+
+        <div class="mr-brand">
+            <div class="mr-brand-icon">R</div>
+            <div>
+                <h2>RescueConnect</h2>
+                <p>Citizen Portal</p>
+            </div>
+        </div>
+
+        <p class="mr-menu-label">MAIN MENU</p>
+
+        <a href="{% url 'citizen_dashboard' %}" class="mr-menu-link">
+            <span>⌂</span> Dashboard
+        </a>
+
+        <a href="{% url 'report_incident' %}" class="mr-menu-link mr-active">
+            <span>＋</span> Report Emergency
+        </a>
+
+        <a href="{% url 'my_reports' %}" class="mr-menu-link">
+            <span>▤</span> My Reports
+        </a>
+
+        <a href="#" class="mr-menu-link">
+            <span>⌖</span> Evacuation Centers
+        </a>
+
+        <p class="mr-menu-label mr-account-label">ACCOUNT</p>
+
+        <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="mr-menu-link mr-logout">
+                <span>↪</span> Logout
+            </button>
+        </form>
+
+    </aside>
+
+    <!-- Main Content -->
+    <main class="mr-content">
+
+        <!-- Header -->
+        <header class="mr-header">
+            <div>
+                <p class="mr-breadcrumb">Citizen Portal / Report Emergency</p>
+                <h1>Report an Emergency</h1>
+                <p class="mr-subtitle">
+                    Submit an emergency report so rescue teams can
+                    understand the situation and coordinate assistance.
+                </p>
+            </div>
+
+            <div class="mr-user">
+                <div class="mr-avatar">
+                    {{ request.user.username|first|upper }}
+                </div>
+                <div>
+                    <strong>{{ request.user.username }}</strong>
+                    <p>Citizen</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- Emergency Notice -->
+        <div class="ir-emergency-notice">
+            <span class="ir-notice-icon">!</span>
+            <div>
+                <strong>Important Emergency Notice</strong>
+                <p>
+                    If you or someone else is in immediate danger,
+                    contact local emergency services as well.
+                </p>
+            </div>
+        </div>
+
+        <!-- Form Heading -->
+        <section class="ir-form-heading">
+            <div>
+                <h2>Emergency Report Form</h2>
+                <p>
+                    Please provide accurate information.
+                    Fields marked with <span>*</span> are required.
+                </p>
+            </div>
+        </section>
+
+        <!-- Incident Form -->
+        <form method="POST" class="ir-form">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="ir-form-errors">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            <!-- Emergency Information -->
+            <section class="ir-form-section">
+
+                <div class="ir-section-heading">
+                    <span class="ir-section-number">01</span>
+                    <div>
+                        <h3>Emergency Information</h3>
+                        <p>Tell us what happened.</p>
+                    </div>
+                </div>
+
+                <div class="ir-field">
+                    <label for="{{ form.incident_type.id_for_label }}">
+                        Incident Type <span>*</span>
+                    </label>
+                    {{ form.incident_type }}
+                    {{ form.incident_type.errors }}
+                </div>
+
+                <div class="ir-field">
+                    <label for="{{ form.severity.id_for_label }}">
+                        Severity Level <span>*</span>
+                    </label>
+                    {{ form.severity }}
+                    {{ form.severity.errors }}
+                    <small>
+                        Select the severity that best describes the situation.
+                    </small>
+                </div>
+
+                <div class="ir-field">
+                    <label for="{{ form.description.id_for_label }}">
+                        Emergency Description <span>*</span>
+                    </label>
+                    {{ form.description }}
+                    {{ form.description.errors }}
+                    <small>
+                        Describe what happened, people affected,
+                        injuries, and any immediate danger.
+                    </small>
+                </div>
+
+            </section>
+
+            <!-- Location -->
+            <section class="ir-form-section">
+
+                <div class="ir-section-heading">
+                    <span class="ir-section-number">02</span>
+                    <div>
+                        <h3>Incident Location</h3>
+                        <p>Help rescue teams identify where assistance is needed.</p>
+                    </div>
+                </div>
+
+                <div class="ir-field">
+                    <label for="{{ form.location.id_for_label }}">
+                        Location / Nearby Landmark <span>*</span>
+                    </label>
+                    {{ form.location }}
+                    {{ form.location.errors }}
+                </div>
+
+                <div class="ir-field-grid">
+
+                    <div class="ir-field">
+                        <label for="{{ form.latitude.id_for_label }}">
+                            Latitude
+                        </label>
+                        {{ form.latitude }}
+                        {{ form.latitude.errors }}
+                    </div>
+
+                    <div class="ir-field">
+                        <label for="{{ form.longitude.id_for_label }}">
+                            Longitude
+                        </label>
+                        {{ form.longitude }}
+                        {{ form.longitude.errors }}
+                    </div>
+
+                </div>
+
+                <div class="ir-gps-note">
+                    GPS coordinates are optional. Automatic location detection
+                    can be added in a later development step.
+                </div>
+
+            </section>
+
+            <!-- People Information -->
+            <section class="ir-form-section">
+
+                <div class="ir-section-heading">
+                    <span class="ir-section-number">03</span>
+                    <div>
+                        <h3>People and Rescue Information</h3>
+                        <p>Provide an estimate of the people affected by this incident.</p>
+                    </div>
+                </div>
+
+                <div class="ir-field-grid ir-people-grid">
+
+                    <div class="ir-field">
+                        <label for="{{ form.people_affected.id_for_label }}">
+                            People Affected
+                        </label>
+                        {{ form.people_affected }}
+                        {{ form.people_affected.errors }}
+                    </div>
+
+                    <div class="ir-field">
+                        <label for="{{ form.people_trapped.id_for_label }}">
+                            People Trapped
+                        </label>
+                        {{ form.people_trapped }}
+                        {{ form.people_trapped.errors }}
+                    </div>
+
+                    <div class="ir-field">
+                        <label for="{{ form.people_injured.id_for_label }}">
+                            People Injured
+                        </label>
+                        {{ form.people_injured }}
+                        {{ form.people_injured.errors }}
+                    </div>
+
+                </div>
+
+                <small class="ir-help-text">
+                    Enter your best estimate. These details help the
+                    system calculate the incident's response priority.
+                </small>
+
+            </section>
+
+            <!-- Actions -->
+            <div class="ir-form-actions">
+
+                <a href="{% url 'citizen_dashboard' %}" class="ir-cancel-button">
+                    Cancel
+                </a>
+
+                <button type="submit" class="ir-submit-button">
+                    Submit Emergency Report
+                    <span>→</span>
+                </button>
+
+            </div>
+
+        </form>
+
+        <p class="ir-privacy-note">
+            Your report will be securely associated with your account.
+        </p>
+
+    </main>
+
+</div>
+
+{% endblock %}

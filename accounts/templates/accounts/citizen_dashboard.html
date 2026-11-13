@@ -1,0 +1,425 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+
+{% block title %}Citizen Dashboard | RescueConnect{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'accounts/css/citizen_dashboard.css' %}">
+{% endblock %}
+
+{% block site_header %}{% endblock %}
+{% block site_footer %}{% endblock %}
+{% block main_class %}rc-main{% endblock %}
+
+{% block content %}
+
+<div class="rc-dashboard">
+
+    <!-- Sidebar -->
+    <aside class="rc-sidebar">
+
+        <!-- Brand -->
+        <div class="rc-brand">
+            <div class="rc-brand-icon">R</div>
+            <div>
+                <h2>RescueConnect</h2>
+                <p>Citizen Portal</p>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="rc-menu">
+
+            <p class="rc-menu-label">MAIN MENU</p>
+
+            <a href="{% url 'citizen_dashboard' %}" class="rc-menu-link rc-active">
+                <span>⌂</span>
+                Dashboard
+            </a>
+
+            <a href="{% url 'report_incident' %}" class="rc-menu-link">
+                <span>＋</span>
+                Report Emergency
+            </a>
+
+            <a href="{% url 'my_reports' %}" class="rc-menu-link">
+                <span>▤</span> My Reports
+            </a>
+
+            <a href="#" class="rc-menu-link">
+                <span>⌖</span>
+                Evacuation Centers
+            </a>
+
+            <p class="rc-menu-label rc-account-label">ACCOUNT</p>
+
+            <a href="#" class="rc-menu-link">
+                <span>⚙</span>
+                Settings
+            </a>
+
+            <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+
+                <button type="submit" class="rc-menu-link rc-logout">
+                    <span>↪</span>
+                    Logout
+                </button>
+            </form>
+
+        </div>
+
+        <!-- Help Card -->
+        <div class="rc-help-card">
+            <div class="rc-help-icon">!</div>
+
+            <h3>Need Help?</h3>
+
+            <p>
+                Report an emergency to request assistance
+                from rescue teams.
+            </p>
+
+            <a href="{% url 'report_incident' %}">
+                Report Now →
+            </a>
+        </div>
+
+    </aside>
+
+
+    <!-- Main Content -->
+    <div class="rc-content">
+
+        <!-- Topbar -->
+        <header class="rc-topbar">
+
+            <div>
+                <p class="rc-breadcrumb">
+                    Citizen Portal / Dashboard
+                </p>
+
+                <h1>Dashboard Overview</h1>
+            </div>
+
+           <!-- Topbar -->
+<header class="rc-topbar">
+
+    <div class="rc-topbar-actions">
+
+        <!-- Notifications -->
+        <a href="{% url 'notifications' %}"
+           class="rc-notification-link"
+           title="View your incident reports">
+
+            <span class="rc-notification-icon">♢</span>
+
+            {% if unread_notifications > 0 %}
+                <span class="rc-notification-badge">
+                    {{ unread_notifications }}
+                </span>
+            {% endif %}
+
+        </a>
+
+        <!-- User Profile -->
+        <div class="rc-user">
+
+            <div class="rc-avatar">
+                {{ request.user.username|first|upper }}
+            </div>
+
+            <div>
+                <strong>{{ request.user.username }}</strong>
+                <p>Citizen</p>
+            </div>
+
+        </div>
+
+    </div>
+
+</header>
+
+        </header>
+
+
+        <!-- Welcome Banner -->
+        <section class="rc-welcome">
+
+            <div>
+                <span class="rc-welcome-label">
+                    WELCOME TO RESCUECONNECT
+                </span>
+
+                <h2>
+                    Hello, {{ request.user.username }}!
+                </h2>
+
+                <p>
+                    Stay informed, report emergencies, and help
+                    keep your community safe.
+                </p>
+            </div>
+
+            <a href="{% url 'report_incident' %}" class="rc-emergency-button">
+                ＋ Report Emergency
+            </a>
+
+        </section>
+
+
+        <!-- Overview -->
+        <section class="rc-section">
+
+            <div class="rc-section-heading">
+
+                <div>
+                    <h2>Your Overview</h2>
+
+                    <p>
+                        A quick summary of your emergency services.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="rc-stats">
+
+                <!-- Total Reports -->
+                <div class="rc-stat-card">
+
+                    <div class="rc-stat-icon rc-blue">▤</div>
+
+                    <p>Total Reports</p>
+
+                    <h3>{{ total_reports }}</h3>
+
+                    <span>Incident statistics coming soon</span>
+
+                </div>
+
+
+                <!-- Pending Reports -->
+                <div class="rc-stat-card">
+
+                    <div class="rc-stat-icon rc-orange">◷</div>
+
+                    <p>Pending Reports</p>
+
+                    <h3>{{ pending_reports }}</h3>
+
+                    <span>Incident statistics coming soon</span>
+
+                </div>
+
+
+                <!-- Resolved Reports -->
+                <div class="rc-stat-card">
+
+                    <div class="rc-stat-icon rc-green">✓</div>
+
+                    <p>Resolved Reports</p>
+
+                    <h3>{{ resolved_reports }}</h3>
+
+                    <span>Incident statistics coming soon</span>
+
+                </div>
+
+
+                <!-- Evacuation Centers -->
+                <div class="rc-stat-card">
+
+                    <div class="rc-stat-icon rc-purple">⌖</div>
+
+                    <p>Evacuation Centers</p>
+
+                    <h3>—</h3>
+
+                    <span>Center module pending</span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Quick Services -->
+        <section class="rc-section">
+
+            <div class="rc-section-heading">
+
+                <div>
+                    <h2>Quick Services</h2>
+
+                    <p>
+                        Access important citizen services.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="rc-services">
+
+                <!-- Emergency Reporting -->
+                <div class="rc-service-card">
+
+                    <div class="rc-service-icon rc-service-red">
+                        !
+                    </div>
+
+                    <h3>Report an Emergency</h3>
+
+                    <p>
+                        Report floods, fires, landslides, accidents,
+                        or other emergencies.
+                    </p>
+
+                    <a href="{% url 'report_incident' %}">
+                        Submit a Report →
+                    </a>
+
+                </div>
+
+
+                <!-- Evacuation Centers -->
+                <div class="rc-service-card">
+
+                    <div class="rc-service-icon rc-service-blue">
+                        ⌖
+                    </div>
+
+                    <h3>Evacuation Centers</h3>
+
+                    <p>
+                        Find information about available evacuation
+                        centers and safe locations.
+                    </p>
+
+                    <a href="#">
+                        Explore Centers →
+                    </a>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- Recent Reports -->
+        <section class="rc-section">
+
+            <div class="rc-section-heading rc-reports-heading">
+
+                <div>
+                    <h2>Recent Incident Reports</h2>
+                    <p>Keep track of your submitted emergency reports.</p>
+                </div>
+
+                <a href="{% url 'my_reports' %}" class="rc-view-all">
+                    View All →
+                </a>
+
+            </div>
+
+            {% if recent_reports %}
+
+            <div class="rc-reports-list">
+
+                {% for incident in recent_reports %}
+
+                <div class="rc-report-card">
+
+                    <div class="rc-report-main">
+
+                        <div class="rc-report-icon">
+                            !
+                        </div>
+
+                        <div class="rc-report-info">
+
+                            <h3>
+                                {{ incident.get_incident_type_display }}
+                            </h3>
+
+                            <p>
+                                {{ incident.location }}
+                            </p>
+
+                            <span class="rc-report-date">
+                                Submitted:
+                                {{ incident.created_at|date:"M d, Y - h:i A" }}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <div class="rc-report-meta">
+
+                        <span class="rc-severity rc-severity-{{ incident.severity }}">
+                            {{ incident.get_severity_display }}
+                        </span>
+
+                        <span class="rc-status rc-status-{{ incident.status }}">
+                            {{ incident.get_status_display }}
+                        </span>
+
+                    </div>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+            {% else %}
+
+            <div class="rc-empty-state">
+
+                <div class="rc-empty-icon">▤</div>
+
+                <h3>No Reports Yet</h3>
+
+                <p>
+                    Your submitted emergency reports will appear here.
+                </p>
+
+                <a href="{% url 'report_incident' %}">
+                    Submit Your First Report
+                </a>
+
+            </div>
+
+            {% endif %}
+
+        </section>
+
+
+
+        <!-- Safety Reminder -->
+        <section class="rc-safety">
+
+            <div class="rc-safety-icon">!</div>
+
+            <div>
+                <h3>Emergency Safety Reminder</h3>
+
+                <p>
+                    Follow instructions from authorized emergency
+                    responders and move to a safe location when possible.
+                </p>
+            </div>
+
+        </section>
+
+    </div>
+
+</div>
+
+{% endblock %}

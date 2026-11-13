@@ -1,0 +1,266 @@
+
+{% extends 'accounts/base.html' %}
+{% load static %}
+
+{% block title %}My Reports | RescueConnect{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'accounts/css/my_reports.css' %}">
+{% endblock %}
+
+{% block site_header %}{% endblock %}
+{% block site_footer %}{% endblock %}
+{% block main_class %}mr-main{% endblock %}
+
+{% block content %}
+
+<div class="mr-layout">
+
+    <!-- Sidebar -->
+    <aside class="mr-sidebar">
+
+        <div class="mr-brand">
+            <div class="mr-brand-icon">R</div>
+            <div>
+                <h2>RescueConnect</h2>
+                <p>Citizen Portal</p>
+            </div>
+        </div>
+
+        <p class="mr-menu-label">MAIN MENU</p>
+
+        <a href="{% url 'citizen_dashboard' %}" class="mr-menu-link">
+            <span>⌂</span> Dashboard
+        </a>
+
+        <a href="{% url 'report_incident' %}" class="mr-menu-link">
+            <span>＋</span> Report Emergency
+        </a>
+
+        <a href="{% url 'my_reports' %}" class="mr-menu-link mr-active">
+            <span>▤</span> My Reports
+        </a>
+
+        <a href="#" class="mr-menu-link">
+            <span>⌖</span> Evacuation Centers
+        </a>
+
+        <p class="mr-menu-label mr-account-label">ACCOUNT</p>
+
+        <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="mr-menu-link mr-logout">
+                <span>↪</span> Logout
+            </button>
+        </form>
+
+    </aside>
+
+    <!-- Main Content -->
+    <main class="mr-content">
+
+        <!-- Header -->
+        <header class="mr-header">
+            <div>
+                <p class="mr-breadcrumb">Citizen Portal / My Reports</p>
+                <h1>My Incident Reports</h1>
+                <p class="mr-subtitle">
+                    View and track the progress of your emergency reports.
+                </p>
+            </div>
+
+            <div class="mr-user">
+                <div class="mr-avatar">
+                    {{ request.user.username|first|upper }}
+                </div>
+                <div>
+                    <strong>{{ request.user.username }}</strong>
+                    <p>Citizen</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- Summary -->
+        <section class="mr-summary">
+
+            <div>
+                <p>Total Submitted Reports</p>
+                <h2>{{ total_reports }}</h2>
+                <span>Your complete reporting history</span>
+            </div>
+
+            <a href="{% url 'report_incident' %}" class="mr-new-button">
+                ＋ Report New Emergency
+            </a>
+
+        </section>
+
+        <!-- Reports -->
+        <section class="mr-section">
+
+            <div class="mr-section-heading">
+                <div>
+                    <h2>All Reports</h2>
+                    <p>Your submitted emergency reports and their current status.</p>
+                </div>
+
+                <span class="mr-count">
+                    {{ total_reports }} Reports
+                </span>
+            </div>
+
+            {% if page_obj %}
+
+            <div class="mr-table-wrapper">
+
+                <table class="mr-table">
+
+                    <thead>
+                        <tr>
+                            <th>Incident</th>
+                            <th>Location</th>
+                            <th>Severity</th>
+                            <th>Priority</th>
+                            <th>Date Submitted</th>
+                            <th>Status</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for incident in page_obj %}
+
+                        <tr>
+
+                            <td>
+                                <strong class="mr-incident-name">
+                                    {{ incident.get_incident_type_display }}
+                                </strong>
+                                <span class="mr-incident-id">
+                                    Report #{{ incident.id }}
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="mr-location">
+                                    {{ incident.location }}
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="mr-severity mr-severity-{{ incident.severity }}">
+                                    {{ incident.get_severity_display }}
+                                </span>
+                            </td>
+
+                            <!-- Priority -->
+                            <td>
+                                <div class="mr-priority-cell">
+                                    <span class="mr-priority mr-priority-{{ incident.priority_level }}">
+                                        {{ incident.get_priority_level_display }}
+                                    </span>
+                                    <span class="mr-priority-score">
+                                        {{ incident.priority_score }} points
+                                    </span>
+                                </div>
+                            </td>
+
+                            <td>
+                                <span class="mr-date">
+                                    {{ incident.created_at|date:"M d, Y" }}
+                                </span>
+                                <span class="mr-time">
+                                    {{ incident.created_at|date:"h:i A" }}
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="mr-status mr-status-{{ incident.status }}">
+                                    {{ incident.get_status_display }}
+                                </span>
+                            </td>
+
+                            <td>
+                                <a href="{% url 'incident_detail' incident.id %}"
+                                   class="mr-view-btn">
+                                    View Details
+                                </a>
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <!-- Pagination -->
+            {% if page_obj.has_other_pages %}
+
+            <div class="mr-pagination">
+
+                <span class="mr-page-info">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                </span>
+
+                <div class="mr-page-buttons">
+
+                    {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}" class="mr-page-button">
+                        ← Previous
+                    </a>
+                    {% endif %}
+
+                    {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}" class="mr-page-button">
+                        Next →
+                    </a>
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+            {% else %}
+
+            <div class="mr-empty-state">
+
+                <div class="mr-empty-icon">▤</div>
+
+                <h3>No Incident Reports Found</h3>
+
+                <p>
+                    You haven't submitted any emergency reports yet.
+                    Your reports will appear here after submission.
+                </p>
+
+                <a href="{% url 'report_incident' %}">
+                    Submit Your First Report
+                </a>
+
+            </div>
+
+            {% endif %}
+
+        </section>
+
+        <!-- Information -->
+        <div class="mr-information">
+            <strong>Report Status Information</strong>
+            <p>
+                Your reports are reviewed by the emergency management
+                team. Their status will update as the response progresses.
+            </p>
+        </div>
+
+    </main>
+
+</div>
+
+{% endblock %}
