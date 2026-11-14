@@ -1,0 +1,27 @@
+{
+    "id": "/",
+    "name": "RescueConnect - Emergency Rescue and Evacuation",
+    "short_name": "RescueConnect",
+    "description": "Emergency Rescue and Evacuation Management System",
+    "start_url": "/",
+    "scope": "/",
+    "display": "standalone",
+    "orientation": "portrait",
+    "background_color": "#f4f7fb",
+    "theme_color": "#142b4a",
+    "lang": "en",
+    "icons": [
+    {
+        "src": "/static/accounts/icons/icon-192.png",
+        "sizes": "192x192",
+        "type": "image/png",
+        "purpose": "any"
+    },
+    {
+        "src": "/static/accounts/icons/icon-512.png",
+        "sizes": "512x512",
+        "type": "image/png",
+        "purpose": "any"
+    }
+    ]
+}

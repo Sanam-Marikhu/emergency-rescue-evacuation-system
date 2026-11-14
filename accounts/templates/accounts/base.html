@@ -1,12 +1,13 @@
-
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#142b4a">
 
+    <link rel="manifest" href="{% static 'accounts/manifest.json' %}">
     <title>{% block title %}RescueConnect{% endblock %}</title>
 
     <link rel="stylesheet" href="{% static 'accounts/css/style.css' %}">
@@ -30,19 +31,19 @@
                 <a href="{% url 'home' %}">Home</a>
 
                 {% if user.is_authenticated %}
-                    <span class="nav-user">
-                        Hi, {{ user.username }}
-                    </span>
+                <span class="nav-user">
+                    Hi, {{ user.username }}
+                </span>
 
-                    <form method="post" action="{% url 'logout' %}" class="nav-form">
-                        {% csrf_token %}
-                        <button type="submit" class="nav-button">Logout</button>
-                    </form>
+                <form method="post" action="{% url 'logout' %}" class="nav-form">
+                    {% csrf_token %}
+                    <button type="submit" class="nav-button">Logout</button>
+                </form>
                 {% else %}
-                    <a href="{% url 'login' %}">Login</a>
-                    <a href="{% url 'register' %}" class="nav-register">
-                        Get Started
-                    </a>
+                <a href="{% url 'login' %}">Login</a>
+                <a href="{% url 'register' %}" class="nav-register">
+                    Get Started
+                </a>
                 {% endif %}
             </nav>
 
@@ -51,13 +52,13 @@
     {% endblock %}
 
     {% if messages %}
-        <div class="container messages-container">
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}">
-                    {{ message }}
-                </div>
-            {% endfor %}
+    <div class="container messages-container">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
         </div>
+        {% endfor %}
+    </div>
     {% endif %}
 
     <main class="{% block main_class %}{% endblock %}">
@@ -76,6 +77,27 @@
     {% endblock %}
 
     <script src="{% static 'accounts/js/auth.js' %}" defer></script>
+    <!-- Register PWA Service Worker -->
+    <script>
+        if ("serviceWorker" in navigator) {
+            window.addEventListener("load", function () {
+                navigator.serviceWorker.register("/service-worker.js")
+                    .then(function (registration) {
+                        console.log(
+                            "RescueConnect Service Worker registered:",
+                            registration.scope
+                        );
+                    })
+                    .catch(function (error) {
+                        console.error(
+                            "Service Worker registration failed:",
+                            error
+                        );
+                    });
+            });
+        }
+    </script>
 
 </body>
+
 </html>

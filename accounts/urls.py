@@ -24,6 +24,12 @@ urlpatterns = [
         name='report_incident'
     ),
     path(
+        'citizen/sync-offline-report/',
+        views.sync_offline_report,
+        name='sync_offline_report'
+    ),
+
+    path(
     'citizen/my-reports/',
     views.my_reports,
     name='my_reports'

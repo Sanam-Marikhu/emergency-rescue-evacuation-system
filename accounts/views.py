@@ -1,4 +1,7 @@
 
+import json
+import uuid
+from django.views.decorators.http import require_POST
 from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm
@@ -7,10 +10,28 @@ from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
+from django.http import HttpResponse, Http404,JsonResponse
+from django.contrib.staticfiles.finders import find
 
 from .forms import RegisterForm,IncidentForm
 from .models import Profile,Incident,IncidentStatusHistory
 
+def service_worker(request):
+    file_path = find('accounts/service-worker.js')
+
+    if not file_path:
+        raise Http404("Service worker file not found.")
+
+    with open(file_path, 'rb') as file:
+        response = HttpResponse(
+            file.read(),
+            content_type='application/javascript'
+        )
+
+    response['Service-Worker-Allowed'] = '/'
+    response['Cache-Control'] = 'no-cache'
+
+    return response
 
 def redirect_user(user):
     """Redirect users according to their role."""
@@ -220,6 +241,117 @@ def report_incident(request):
         'accounts/report_incident.html',
         {'form': form}
     )
+
+@login_required
+@require_POST
+def sync_offline_report(request):
+
+    # Only citizens can synchronize incident reports.
+    if request.user.is_staff or request.user.is_superuser:
+        return JsonResponse(
+            {'success': False, 'message': 'Access denied.'},
+            status=403
+        )
+
+    if not hasattr(request.user, 'profile'):
+        return JsonResponse(
+            {'success': False, 'message': 'Citizen profile not found.'},
+            status=403
+        )
+
+    if request.user.profile.role != 'citizen':
+        return JsonResponse(
+            {'success': False, 'message': 'Access denied.'},
+            status=403
+        )
+
+    # Read the submitted JSON.
+    try:
+        payload = json.loads(request.body)
+
+        submission_id = uuid.UUID(str(payload.get('submission_id')))
+        report_data = payload.get('data')
+
+        if not isinstance(report_data, dict):
+            raise ValueError("Invalid report data.")
+
+    except (json.JSONDecodeError, ValueError, TypeError, AttributeError):
+        return JsonResponse(
+            {'success': False, 'message': 'Invalid submission data.'},
+            status=400
+        )
+
+    # Check whether this report was already synchronized.
+    existing = Incident.objects.filter(
+        submission_id=submission_id
+    ).first()
+
+    if existing:
+        if existing.reporter_id != request.user.id:
+            return JsonResponse(
+                {'success': False, 'message': 'Submission ID conflict.'},
+                status=409
+            )
+
+        return JsonResponse({
+            'success': True,
+            'duplicate': True,
+            'incident_id': existing.id,
+            'message': 'This report was already synchronized.'
+        })
+
+    # Validate using the existing incident form.
+    form = IncidentForm(report_data)
+
+    if not form.is_valid():
+        return JsonResponse({
+            'success': False,
+            'message': 'Please check the submitted report.',
+            'errors': form.errors.get_json_data()
+        }, status=400)
+
+    try:
+        with transaction.atomic():
+
+            incident = form.save(commit=False)
+            incident.reporter = request.user
+            incident.submission_id = submission_id
+            incident.status = 'pending'
+
+            # Use the existing priority calculation.
+            incident.calculate_priority()
+            incident.save()
+
+            # Create the initial status history.
+            IncidentStatusHistory.objects.create(
+                incident=incident,
+                status='pending',
+                message='Your emergency report has been successfully submitted.',
+                updated_by=request.user
+            )
+
+    except Exception as error:
+        # Handle a possible simultaneous duplicate submission.
+        existing = Incident.objects.filter(
+            submission_id=submission_id
+        ).first()
+
+        if existing and existing.reporter_id == request.user.id:
+            return JsonResponse({
+                'success': True,
+                'duplicate': True,
+                'incident_id': existing.id,
+                'message': 'This report was already synchronized.'
+            })
+
+        raise error
+
+    return JsonResponse({
+        'success': True,
+        'duplicate': False,
+        'incident_id': incident.id,
+        'message': 'Offline report synchronized successfully.'
+    }, status=201)
 
 
 @login_required

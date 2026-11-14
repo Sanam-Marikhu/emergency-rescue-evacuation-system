@@ -1,7 +1,6 @@
-
+import uuid
 from django.db import models
 from django.contrib.auth.models import User
-
 
 class Profile(models.Model):
 
@@ -96,6 +95,12 @@ class Incident(models.Model):
         on_delete=models.CASCADE,
         related_name='reported_incidents'
     )
+    submission_id = models.UUIDField(
+    default=None,
+    null=True,
+    blank=True,
+    unique=True,
+    editable=False)
 
     incident_type = models.CharField(
         max_length=30,

@@ -15,9 +15,18 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path,include
+from django.urls import path, include
+from accounts import views as account_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('',include('accounts.urls')),
+
+    # PWA Service Worker
+    path(
+        'service-worker.js',
+        account_views.service_worker,
+        name='service_worker'
+    ),
+
+    path('', include('accounts.urls')),
 ]

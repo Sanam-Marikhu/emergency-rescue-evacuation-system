@@ -106,8 +106,9 @@
         </section>
 
         <!-- Incident Form -->
-        <form method="POST" class="ir-form">
+        <form method="POST" class="ir-form" id="incident-report-form">
             {% csrf_token %}
+            <div id="offline-status" class="ir-offline-status" role="status" aria-live="polite" hidden></div>
 
             {% if form.non_field_errors %}
                 <div class="ir-form-errors">
@@ -274,5 +275,5 @@
     </main>
 
 </div>
-
+<script src="{% static 'accounts/js/offline-reports.js' %}" defer></script>
 {% endblock %}
